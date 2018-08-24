@@ -3,7 +3,7 @@
 #
 # Temboo Arduino library
 #
-# Copyright 2015, Temboo Inc.
+# Copyright 2017, Temboo Inc.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,59 +24,8 @@
 #if defined (ARDUINO_AVR_YUN) || defined (ARDUINO_AVR_TRE)
 
 ///////////////////////////////////////////////////////
-//  BEGIN ARDUINO YUN AND TRE SUPPORT
+//  ARDUINO YUN AND TRE SUPPORT IN HEADER FILE
 ///////////////////////////////////////////////////////
-
-#include <Temboo.h>
-
-void TembooChoreo::begin() {
-    Process::begin("temboo");
-}
-
-void TembooChoreo::setAccountName(const String& accountName) {
-    addParameter("-a" + accountName);
-}
-
-void TembooChoreo::setAppKeyName(const String& appKeyName) {
-    addParameter("-u" + appKeyName);
-}
-
-void TembooChoreo::setAppKey(const String& appKey) {
-    addParameter("-p" + appKey);
-}
-
-void TembooChoreo::setChoreo(const String& choreo) {
-    addParameter("-c" + choreo);
-}
-
-void TembooChoreo::setCredential(const String& credentialName) {
-    addParameter("-e" + credentialName);
-}
-
-void TembooChoreo::setSavedInputs(const String& savedInputsName) {
-    addParameter("-e" + savedInputsName);
-}
-
-void TembooChoreo::setProfile(const String& profileName) {
-    addParameter("-e" + profileName);
-}
-
-void TembooChoreo::addInput(const String& inputName, const String& inputValue) {
-    addParameter("-i" + inputName + ":" + inputValue);
-}
-
-void TembooChoreo::addOutputFilter(const String& outputName, const String& filterPath, const String& variableName) {
-    addParameter("-o" + outputName + ":" + filterPath + ":" + variableName);
-}
-
-void TembooChoreo::setSettingsFileToWrite(const String& filePath) {
-    addParameter("-w" + filePath);
-}
-
-void TembooChoreo::setSettingsFileToRead(const String& filePath) {
-    addParameter("-r" + filePath);
-}
-
 
 #else //ARDUINO_AVR_YUN
 
@@ -172,6 +121,21 @@ void TembooChoreo::setProfile(const char* profileName) {
     m_preset.put(profileName);
 }
 
+void TembooChoreo::setDeviceType(const String& deviceType) {
+    m_deviceType.put(deviceType.c_str());
+}
+
+void TembooChoreo::setDeviceType(const char* deviceType) {
+    m_deviceType.put(deviceType);
+}
+
+void TembooChoreo::setDeviceName(const String& deviceName) {
+    m_deviceName.put(deviceName.c_str());
+}
+
+void TembooChoreo::setDeviceName(const char* deviceName) {
+    m_deviceName.put(deviceName);
+}
 
 void TembooChoreo::addInput(const String& inputName, const String& inputValue) {
     m_inputs.put(inputName.c_str(), inputValue.c_str());
@@ -192,6 +156,61 @@ void TembooChoreo::addInput(const String& inputName, const char* inputValue) {
     m_inputs.put(inputName.c_str(), inputValue);
 }
 
+void TembooChoreo::addInputWithSensor(const String& inputName, const String& inputValue) {
+    m_expressions.put(inputName.c_str(), inputValue.c_str());
+}
+
+void TembooChoreo::addInputWithSensor(const char* inputName, const String& inputValue) {
+    m_expressions.put(inputName, inputValue.c_str());
+}
+
+void TembooChoreo::addInputWithSensor(const char* inputName, const char* inputValue) {
+    m_expressions.put(inputName, inputValue);
+}
+
+void TembooChoreo::addInputExpression(const String& inputName, const String& inputValue) {
+    m_expressions.put(inputName.c_str(), inputValue.c_str());
+}
+
+void TembooChoreo::addInputExpression(const char* inputName, const String& inputValue) {
+    m_expressions.put(inputName, inputValue.c_str());
+}
+
+void TembooChoreo::addInputExpression(const char* inputName, const char* inputValue) {
+    m_expressions.put(inputName, inputValue);
+}
+
+void TembooChoreo::addSensorValue(const char* sensorName, int sensorValue, const char* conversion) {
+    m_sensors.put(sensorName, sensorValue, conversion, NULL, NULL, NULL, NULL, NULL);
+}
+
+void TembooChoreo::addSensorValue(const char* sensorName, int sensorValue) {
+    m_sensors.put(sensorName, sensorValue, NULL, NULL, NULL, NULL, NULL, NULL);
+}
+
+void TembooChoreo::addSensorValue(const char* sensorName, int sensorValue, const char* conversion, const char* calibrationValue) {
+    m_sensors.put(sensorName, sensorValue, conversion, NULL, NULL, NULL, NULL, calibrationValue);
+}
+        
+void TembooChoreo::addSensorValue(const char* sensorName, int sensorValue, const char* rawLow, const char* rawHigh, const char* scaleLow, const char* scaleHigh) {
+    m_sensors.put(sensorName, sensorValue, NULL, rawLow, rawHigh, scaleLow, scaleHigh, NULL);
+}
+
+void TembooChoreo::addSensorInput(const char* sensorName, int sensorValue, const char* conversion) {
+    m_sensors.put(sensorName, sensorValue, conversion, NULL, NULL, NULL, NULL, NULL);
+}
+
+void TembooChoreo::addSensorInput(const char* sensorName, int sensorValue) {
+    m_sensors.put(sensorName, sensorValue, NULL, NULL, NULL, NULL, NULL, NULL);
+}
+
+void TembooChoreo::addSensorInput(const char* sensorName, int sensorValue, const char* conversion, const char* calibrationValue) {
+    m_sensors.put(sensorName, sensorValue, conversion, NULL, NULL, NULL, NULL, calibrationValue);
+}
+        
+void TembooChoreo::addSensorInput(const char* sensorName, int sensorValue, const char* rawLow, const char* rawHigh, const char* scaleLow, const char* scaleHigh) {
+    m_sensors.put(sensorName, sensorValue, NULL, rawLow, rawHigh, scaleLow, scaleHigh, NULL);
+}
 
 void TembooChoreo::addOutputFilter(const char* outputName, const char* filterPath, const char* variableName) {
     m_outputs.put(outputName, filterPath, variableName);
@@ -241,6 +260,10 @@ int TembooChoreo::run(uint16_t timeoutSecs) {
     return run(INADDR_NONE, 80, timeoutSecs);
 }
 
+int TembooChoreo::run(IPAddress addr, uint16_t port) {
+    return run(addr, port, TEMBOO_CHOREO_DEFAULT_TIMEOUT_SECS);
+}
+
 int TembooChoreo::run(IPAddress addr, uint16_t port, uint16_t timeoutSecs) {
     
     m_nextChar = NULL;
@@ -266,7 +289,7 @@ int TembooChoreo::run(IPAddress addr, uint16_t port, uint16_t timeoutSecs) {
     
     for (int i = 0; i < 2; i++) {
         unsigned long timeoutBeginSecs = session.getTime();
-        if (0 != session.executeChoreo(m_accountName, m_appKeyName, m_appKeyValue, m_path, m_inputs, m_outputs, m_preset)) {
+        if (0 != session.executeChoreo(m_accountName, m_appKeyName, m_appKeyValue, m_path, m_inputs, m_expressions, m_sensors, m_outputs, m_preset, m_deviceType, m_deviceName)) {
             httpCode = 0;
             break;
         }
@@ -351,7 +374,11 @@ int TembooChoreo::peek() {
     // If we're still sending the HTTP response code,
     // return the next character in that sequence.
     if (m_nextChar != NULL) {
-        return (int)*m_nextChar;
+        if(m_nextState != HTTP_CODE_VALUE) {
+            return (int)pgm_read_byte(m_nextChar);
+        } else {
+            return (int)*m_nextChar;
+        }
     }
 
     // Otherwise, return whatever is in the client buffer.

@@ -30,6 +30,7 @@ class BridgeClass {
   public:
     BridgeClass(Stream &_stream);
     void begin();
+    void end();
 
     // Methods to handle key/value datastore
     void put(const char *key, const char *value);
@@ -70,7 +71,7 @@ class BridgeClass {
       return bridgeVersion;
     }
 
-    static const int TRANSFER_TIMEOUT = 0xFFFF;
+    static const uint16_t TRANSFER_TIMEOUT = 0xFFFF;
 
   private:
     uint8_t index;
@@ -105,11 +106,24 @@ class SerialBridgeClass : public BridgeClass {
       BridgeClass::begin();
     }
 
+    void end(unsigned long baudrate = BRIDGE_BAUDRATE) {
+      serial.begin(baudrate);
+      BridgeClass::end();
+    }
+
   private:
     HardwareSerial &serial;
 };
 
 extern SerialBridgeClass Bridge;
+
+// Some microcrontrollers don't start the bootloader after a reset.
+// This function is intended to let the microcontroller erase its
+// flash after checking a specific signal coming from the external
+// device without the need to press the erase button on the board.
+// The purpose is to enable a software update that does not require
+// a manual interaction with the board.
+extern void checkForRemoteSketchUpdate(uint8_t pin = 7);
 
 #endif /* BRIDGE_H_ */
 

@@ -3,10 +3,10 @@
  * from software on a host computer. It is intended to work with
  * any host computer software package.
  *
- * To download a host software package, please clink on the following link
- * to open the download page in your default browser.
+ * To download a host software package, please click on the following link
+ * to open the list of Firmata client libraries in your default browser.
  *
- * http://firmata.org/wiki/Download
+ * https://github.com/firmata/arduino#firmata-client-libraries
  */
 
 /* This sketch accepts strings and raw sysex messages and echos them back.
@@ -28,7 +28,7 @@ void sysexCallback(byte command, byte argc, byte *argv)
 
 void setup()
 {
-  Firmata.setFirmwareVersion(FIRMATA_MAJOR_VERSION, FIRMATA_MINOR_VERSION);
+  Firmata.setFirmwareVersion(FIRMATA_FIRMWARE_MAJOR_VERSION, FIRMATA_FIRMWARE_MINOR_VERSION);
   Firmata.attach(STRING_DATA, stringCallback);
   Firmata.attach(START_SYSEX, sysexCallback);
   Firmata.begin(57600);

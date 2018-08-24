@@ -2,7 +2,7 @@
  * To run this test suite, you must first install the ArduinoUnit library
  * to your Arduino/libraries/ directory.
  * You can get ArduinoUnit here: https://github.com/mmurdoch/arduinounit
- * Download version 2.0 or greater.
+ * Download version 2.0 or greater or install it via the Arduino library manager.
  */
 
 #include <ArduinoUnit.h>
@@ -26,8 +26,8 @@ test(beginPrintsVersion)
 
   char expected[] = {
     REPORT_VERSION,
-    FIRMATA_MAJOR_VERSION,
-    FIRMATA_MINOR_VERSION,
+    FIRMATA_PROTOCOL_MAJOR_VERSION,
+    FIRMATA_PROTOCOL_MINOR_VERSION,
     0
   };
   assertEqual(expected, stream.bytesWritten());
@@ -56,6 +56,12 @@ void setupDigitalPort()
 {
   _digitalPort = 0;
   _digitalPortValue = 0;
+}
+
+char * _receivedString;
+void handleStringCallback(char *str)
+{
+  _receivedString = str;
 }
 
 test(processWriteDigital_0)
@@ -134,3 +140,33 @@ test(setFirmwareVersionDoesNotLeakMemory)
 
   assertEqual(0, initialMemory - freeMemory());
 }
+
+test(sendStringShouldEncode2BytesPerChar)
+{
+  FakeStream stream;
+  Firmata.begin(stream);
+  // reset the buffer because the firmware name string will be sent on Firmata.begin
+  stream.reset();
+
+  char testString[] = "hi!";
+  Firmata.sendString(testString);
+
+  byte expected[] = { START_SYSEX, STRING_DATA, 'h', 0, 'i', 0, '!', 0, END_SYSEX };
+
+  int len = stream.bytesWritten().length();
+  assertEqual(sizeof(expected), len);
+  for (byte i = 0; i < len; i++) {
+    assertEqual(expected[i], (byte)stream.bytesWritten().charAt(i));
+  }
+}
+
+test(receivedStringShouldDecodeFrom2BytesPerChar)
+{
+  Firmata.attach(STRING_DATA, handleStringCallback);
+
+  byte message[] = { START_SYSEX, STRING_DATA, 'b', 0, 'y', 0, 'e', 0, '!', 0, END_SYSEX };
+  processMessage(message, 11);
+
+  assertEqual("bye!", _receivedString);
+}
+

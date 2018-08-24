@@ -3,10 +3,10 @@
  * from software on a host computer. It is intended to work with
  * any host computer software package.
  *
- * To download a host software package, please clink on the following link
- * to open the download page in your default browser.
+ * To download a host software package, please click on the following link
+ * to open the list of Firmata client libraries in your default browser.
  *
- * http://firmata.org/wiki/Download
+ * https://github.com/firmata/arduino#firmata-client-libraries
  */
 
 /* This firmware supports as many servos as possible using the Servo library
@@ -38,7 +38,7 @@ void setup()
 {
   byte pin;
 
-  Firmata.setFirmwareVersion(FIRMATA_MAJOR_VERSION, FIRMATA_MINOR_VERSION);
+  Firmata.setFirmwareVersion(FIRMATA_FIRMWARE_MAJOR_VERSION, FIRMATA_FIRMWARE_MINOR_VERSION);
   Firmata.attach(ANALOG_MESSAGE, analogWriteCallback);
   Firmata.attach(SYSTEM_RESET, systemResetCallback);
 
